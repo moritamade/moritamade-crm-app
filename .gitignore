@@ -1,0 +1,6 @@
+# env & build
+.env
+.env.local
+.next/
+node_modules/
+.vercel/
