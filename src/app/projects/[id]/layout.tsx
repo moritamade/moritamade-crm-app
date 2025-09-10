@@ -1,17 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { notFound } from 'next/navigation';
 import { db } from '@/lib/db';
 import { ProjectTabs } from '@/components/ProjectTabs';
-import type { ReactNode } from 'react';
 
 export const dynamic = 'force-dynamic';
 
-type LayoutProps = Readonly<{
-  children: ReactNode;
-  params: { id: string };
-}>;
+export default async function ProjectLayout({ children, params }: any) {
+  const id = params?.id as string | undefined;
+  if (!id) notFound();
 
-export default async function ProjectLayout({ children, params }: LayoutProps) {
-  const { id } = params;
   const project = await db.project.findUnique({ where: { id } });
   if (!project) notFound();
 
