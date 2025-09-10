@@ -5,14 +5,13 @@ import { cookies } from 'next/headers';
 export const runtime = 'nodejs';
 
 export async function POST(req: Request) {
-  const body = await req.json().catch(() => null);
-  // Expecting { event, session }
-  const { event, session } = body || {};
+  const body = await req.json().catch(() => ({}));
+  const { event, session } = body;
 
-  const store = await cookies();
-  const supabase = createRouteHandlerClient({ cookies: () => store });
+  // IMPORTANT: pass the cookies function directly (do NOT await cookies())
+  const supabase = createRouteHandlerClient({ cookies });
 
-  // This writes the auth cookies for password sign-in / sign-up flows
+  // writes auth cookies for password sign-in / sign-up
   await supabase.auth.setSession(session);
 
   return NextResponse.json({ ok: true, event: event ?? null });
