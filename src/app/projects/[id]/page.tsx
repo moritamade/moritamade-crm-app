@@ -1,11 +1,11 @@
-// @ts-nocheck
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { redirect } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
 
-// minimal index for /projects/[id] – just send to overview
+// Minimal index for /projects/[id] – redirect to overview
 export default function ProjectIndex({ params }: any) {
-  redirect(`/projects/${params.id}/overview`);
+  const id = params?.id as string | undefined;
+  if (!id) return null;
+  redirect(`/projects/${id}/overview`);
 }
