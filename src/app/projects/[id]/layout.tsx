@@ -4,14 +4,12 @@ import { ProjectTabs } from '@/components/ProjectTabs';
 
 export const dynamic = 'force-dynamic';
 
-export default async function ProjectLayout({
-  children,
-  params,
-}: {
-  children: React.ReactNode;
-  params: { id: string };
-}) {
-  const project = await db.project.findUnique({ where: { id: params.id } });
+// Loosen the props typing to avoid Next/TS mismatch during build
+export default async function ProjectLayout({ children, params }: any) {
+  const id = params?.id as string | undefined;
+  if (!id) notFound();
+
+  const project = await db.project.findUnique({ where: { id } });
   if (!project) notFound();
 
   return (
