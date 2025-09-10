@@ -4,22 +4,16 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-// IMPORTANT: don't crash the build if DB isn't reachable.
-// Try to query, but swallow errors and return ok:false.
 export async function GET() {
   try {
-    // Lazy import so Prisma isn't even loaded unless we hit the route
+    // Lazy import so Prisma only loads if this route is hit
     const { db } = await import('@/lib/db');
     const count = await db.project.count();
     return NextResponse.json({ ok: true, projects: count });
-  } catch (err: any) {
-    return NextResponse.json(
-      {
-        ok: false,
-        error: err?.name || 'DBError',
-        message: err?.message || 'Database not reachable or not migrated',
-      },
-      { status: 200 }
-    );
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Database not reachable or not migrated';
+    const name = err instanceof Error ? err.name : 'DBError';
+    // Never throw during build/runtime; just report status
+    return NextResponse.json({ ok: false, error: name, message }, { status: 200 });
   }
 }
