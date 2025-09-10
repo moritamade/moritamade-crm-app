@@ -1,9 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { db } from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
 
-export default async function Overview({ params }: { params: { id: string } }) {
-  const p = await db.project.findUnique({ where: { id: params.id } });
+export default async function Overview(props: any) {
+  const id = props?.params?.id as string | undefined;
+  if (!id) return null;
+
+  const p = await db.project.findUnique({ where: { id } });
 
   return (
     <section className="space-y-3">
@@ -22,7 +26,8 @@ export default async function Overview({ params }: { params: { id: string } }) {
         </div>
       </div>
       <div className="text-sm opacity-70">
-        Created: {p?.createdAt?.toISOString?.().slice(0,10)} · Updated: {p?.updatedAt?.toISOString?.().slice(0,10)}
+        Created: {p?.createdAt?.toISOString?.().slice(0, 10)} · Updated:{' '}
+        {p?.updatedAt?.toISOString?.().slice(0, 10)}
       </div>
     </section>
   );
