@@ -10,9 +10,9 @@ export async function GET(req: Request) {
   const next = url.searchParams.get('next') ?? '/dashboard';
 
   if (code) {
-    const store = await cookies();
-    const supabase = createRouteHandlerClient({ cookies: () => store });
-    await supabase.auth.exchangeCodeForSession(code); // sets server cookies
+    // pass the cookies function directly (no await)
+    const supabase = createRouteHandlerClient({ cookies });
+    await supabase.auth.exchangeCodeForSession(code);
   }
 
   return NextResponse.redirect(new URL(next, url.origin));

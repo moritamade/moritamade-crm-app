@@ -1,8 +1,8 @@
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 
-// Next.js 15: cookies() is async
+// Keep async so existing `await createServerSupabase()` calls still work
 export async function createServerSupabase() {
-  const cookieStore = await cookies();
-  return createServerComponentClient({ cookies: () => cookieStore });
+  // pass the cookies function directly
+  return createServerComponentClient({ cookies });
 }
